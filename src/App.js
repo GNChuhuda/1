@@ -164,7 +164,7 @@ function App() {
   return (
     <div className="App">
       <div className="button-container">
-        <div className="logo-text">ABE-MET</div>
+        <div className="logo-text" onClick={() => setActiveTab('home')} style={{cursor: 'pointer'}}>ABE-MET</div>
         <div className="icon-placeholder" style={{
           backgroundImage: `url(${process.env.PUBLIC_URL}/1.png)`,
           width: '50px',
@@ -830,6 +830,23 @@ function App() {
                               ))}
                             </select>
                           </td>
+                          <td style={{padding: '10px'}}>
+                            <button
+                              onClick={() => {
+                                setTestFiles(testFiles.filter(f => f.id !== testFile.id));
+                              }}
+                              style={{
+                                padding: '8px 12px',
+                                backgroundColor: '#ff6b6b',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '4px',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              删除
+                            </button>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -843,5 +860,5 @@ function App() {
     </div>
   );
 }
-
+ 
 export default App;
