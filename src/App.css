@@ -1,0 +1,457 @@
+.App {
+  text-align: center;
+}/*全局应用样式*/
+
+.button-container {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  padding: 0 20px;
+  background: linear-gradient(90deg, rgba(255,179,71,0.6), rgba(255,204,51,0.6));
+  width: 100%;
+  margin: 0;
+  height: 60px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}/*按钮容器样式*/
+
+.logo-text {
+  font-family: 'Arial Black', sans-serif;
+  font-size: 24px;
+  color: #333;
+  margin-right: 30px;
+  letter-spacing: 2px;
+  padding-left: 15px;
+}/*logo文字"ABE-MET"样式*/
+
+.btn {
+  padding: 12px 24px;
+  border: none;
+  font-size: 16px;
+  font-weight: bolder;
+  color: black;
+  cursor: pointer;   /* 鼠标悬停时变为手型指针 */
+  transition: all 0.3s ease;
+  background-color: transparent;
+}/*顶部按钮样式-初始无背景色*/
+
+.btn:hover {
+  background-color: rgba(255,255,255,0.3);
+}/*顶部按钮悬停样式-加浅灰色背景*/
+
+.btn:first-child {
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.btn:last-child {
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+/*顶部按钮圆角样式处理*/
+
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;/* 禁用鼠标事件（防止干扰底层交互） */
+}/*logo图片样式*/
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}/*logo图片旋转动画-条件触发*/
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}/*顶部标题样式*/
+
+.App-link {
+  color: #61dafb;
+}/*顶部链接样式*/
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}/*logo图片旋转动画*/
+
+/* 用户注册界面样式 */
+.register-content {
+  padding: 20px;
+  background-color: #F8F1E0;
+  min-height: calc(100vh - 60px);
+}
+
+.user-list-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}/* 用户列表容器样式 */
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}/* 用户列表样式 */
+
+.user-table th, .user-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}/* 用户列表表头和单元格样式 */
+
+.user-table th {
+  background-color: rgba(255,179,71,0.2);
+  font-weight: bold;
+}/* 用户列表表头样式 */
+
+.user-table tr:hover {
+  background-color: rgba(255,179,71,0.05);
+}/* 用户列表表格单行悬停样式 */
+
+.btn-add-user {
+  background-color: rgba(255,179,71,0.6);
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: bold;
+}/* 添加用户按钮样式 */
+
+.btn-add-user:hover {
+  background-color: rgba(255,179,71,0.8);
+}/* 添加用户按钮悬停样式 */
+
+.btn-download {
+  background-color: rgba(100,200,100,0.6);
+  margin-right: 10px;
+  border-radius: 4px;
+}/* 下载按钮样式 */
+
+.btn-download:hover {
+  background-color: rgba(100,200,100,0.8);
+}/* 下载按钮悬停样式 */
+
+.btn-delete {
+  background-color: rgba(200,100,100,0.6);
+  border-radius: 4px;
+}/* 删除按钮样式 */
+
+.btn-delete:hover {
+  background-color: rgba(200,100,100,0.8);
+}/* 删除按钮悬停样式 */
+
+
+.add-user-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}/* 添加用户弹窗样式 */
+
+.modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}/* 添加用户弹窗内容样式 */
+
+.modal-content h3 {
+  margin-top: 0;
+  color: #333;
+}/* 添加用户弹窗标题样式 */
+
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin: 15px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}/* 添加用户弹窗输入框样式 */
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}/* 添加用户和取消按钮样式 */
+
+.btn-confirm {
+  background-color: rgba(255,179,71,0.6);
+  border-radius: 4px;
+}/* 添加用户确认按钮样式 */
+
+.btn-confirm:hover {
+  background-color: rgba(255,179,71,0.8);
+} /* 添加用户确认按钮悬停样式 */
+
+.btn-cancel {
+  background-color: rgba(200,200,200,0.6);
+  border-radius: 4px;
+}/* 取消按钮样式 */
+
+.btn-cancel:hover {
+  background-color: rgba(200,200,200,0.8);
+}/* 取消按钮悬停样式 */
+生成
+
+.attributes-section {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: rgba(255,255,255,0.7);
+  border-radius: 8px;
+}/* 属性集合(创建用户时)样式 */
+
+.attribute-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}/* 属性表单样式 */
+
+.attribute-inputs {
+  display: flex;
+  gap: 10px;
+}/* 属性输入框样式（容器flex）*/
+
+.attribute-inputs input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}/* 属性输入框样式（边框等） */
+
+.btn-add-attribute {
+  background-color: rgba(100,200,100,0.6);
+  padding: 8px 15px;
+  align-self: flex-start;
+}/* 添加属性按钮样式 */
+
+.btn-add-attribute:hover {
+  background-color: rgba(100,200,100,0.8);
+}/* 添加属性按钮悬停样式 */
+
+.attributes-list {
+  margin-top: 15px;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}/* 显示的属性列表样式 */
+
+.attributes-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 80px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  padding: 0 5px;
+}/* 属性列表头样式 */
+
+.attribute-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr 80px;
+  align-items: center;
+  padding: 8px 5px;
+  border-bottom: 1px solid #f0f0f0;
+}/* 属性列表项样式 */
+
+.btn-remove-attribute {
+  background-color: rgba(200,100,100,0.6);
+  padding: 4px 8px;
+  font-size: 12px;
+}/* 删除属性按钮样式 */
+
+.btn-remove-attribute:hover {
+  background-color: rgba(200,100,100,0.8);
+}/* 删除属性按钮悬停样式 */
+
+.user-id-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}/* 用户ID输入框样式 */
+
+
+.attribute-hover-trigger {
+  position: relative;
+  cursor: pointer;
+}/* 属性悬浮触发提示样式 */
+
+.attribute-icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  background-color: rgba(255,179,71,0.6);
+  border-radius: 50%;
+  color: white;
+  font-weight: bold;
+}/* 属性悬浮提示图标S样式 */
+
+.attribute-tooltip {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 100%;
+  background-color: white;
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  min-width: 150px;
+  z-index: 100;
+  display: none;
+  margin-bottom: 10px;
+}/*属性悬浮提示框显示的样式*/
+
+.attribute-hover-trigger:hover .attribute-tooltip {
+  display: block;
+}/*当鼠标悬停在触发器（.attribute-hover-trigger）上时，显示其子元素提示框（.attribute-tooltip）*/
+
+.attribute-tooltip div {
+  padding: 5px 0;
+  border-bottom: 1px solid #f0f0f0;
+}/*属性悬浮提示框内容样式*/
+
+.attribute-tooltip div:last-child {
+  border-bottom: none;
+}/*属性悬浮提示框最后一行样式*/
+
+/* 加密界面样式 */
+.encrypt-content {
+  padding: 20px;
+  background-color: #F8F1E0;
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.encrypt-illustration {
+  min-height: 200px;
+  width: 100%;
+  max-width: 600px;
+  background-color: rgba(255,255,255,0.5);
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 18px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.file-upload-section {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto 30px;
+  padding: 0 20px;
+}
+
+.upload-group {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.btn-upload {
+  background-color: rgba(255,179,71,0.6);
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+  position: relative;
+}
+
+.btn-upload:hover {
+  background-color: rgba(255,179,71,0.8);
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-preview {
+  background-color: rgba(100,200,100,0.6);
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 14px;
+}
+
+.btn-preview:hover {
+  background-color: rgba(100,200,100,0.8);
+}
+
+.btn-encrypt-action {
+  background-color: rgba(255,100,100,0.6);
+  border-radius: 4px;
+  padding: 12px 30px;
+  font-size: 18px;
+  margin-bottom: 30px;
+}
+
+.btn-encrypt-action:hover {
+  background-color: rgba(255,100,100,0.8);
+}
+
+.btn-encrypt-action:disabled {
+  background-color: rgba(200,200,200,0.6);
+  cursor: not-allowed;
+}
+
+.result-section {
+  width: 100%;
+  max-width: 800px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.result-section h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.result-content {
+  margin-top: 15px;
+}
+
+.result-content pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  background-color: #f5f5f5;
+  padding: 10px;
+  border-radius: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.btn-download {
+  background-color: rgba(100,100,255,0.6);
+  border-radius: 4px;
+  margin-top: 15px;
+}
+
+.btn-download:hover {
+  background-color: rgba(100,100,255,0.8);
+}
