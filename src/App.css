@@ -455,3 +455,46 @@
 .btn-download:hover {
   background-color: rgba(100,100,255,0.8);
 }
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  .button-container {
+    height: 50px;
+    padding: 0 10px;
+    gap: 0;
+  }
+
+  .btn {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  .logo-text {
+    font-size: 18px;
+    margin-right: 15px;
+    padding-left: 10px;
+  }
+
+  .App {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .register-content,
+  .encrypt-content {
+    padding: 10px;
+  }
+
+  .attribute-inputs,
+  .upload-group {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .btn-upload,
+  .btn-encrypt-action {
+    width: 100%;
+    padding: 10px;
+  }
+}
