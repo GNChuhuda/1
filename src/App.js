@@ -567,7 +567,6 @@ function App() {
           borderRadius: '12px',
           padding: '25px',
           margin: '25px 0',
-          backgroundColor: '#ffffff',
           boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)'
         }}>
           <div style={{
