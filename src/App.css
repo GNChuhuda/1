@@ -456,6 +456,13 @@
   background-color: rgba(100,100,255,0.8);
 }
 
+/* Test content style */
+.test-content {
+  padding: 20px;
+  background-color: #F8F1E0;
+  min-height: calc(100vh - 60px);
+}
+
 /* Mobile responsive styles */
 @media (max-width: 768px) {
   .button-container {
@@ -482,7 +489,8 @@
   }
 
   .register-content,
-  .encrypt-content {
+  .encrypt-content,
+  .test-content {
     padding: 10px;
   }
 
