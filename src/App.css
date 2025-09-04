@@ -2,6 +2,18 @@
   text-align: center;
 }/*全局应用样式*/
 
+.role-label {
+  position: absolute;
+  left: 120px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 48px;
+  font-weight: bold;
+  color: rgba(255, 184, 4, 0.719);
+  z-index: 1;
+  opacity: 0.8;
+}
+
 .button-container {
   display: flex;
   align-items: center;
@@ -22,6 +34,13 @@
   letter-spacing: 2px;
   padding-left: 15px;
 }/*logo文字"ABE-MET"样式*/
+
+.icon-placeholder {
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}/*图标占位符样式*/
+
 
 .btn {
   padding: 12px 24px;
@@ -46,9 +65,7 @@
 .btn:last-child {
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
-}
-/*顶部按钮圆角样式处理*/
-
+}/*顶部按钮圆角样式处理*/
 
 .App-logo {
   height: 40vmin;
@@ -85,17 +102,68 @@
   }
 }/*logo图片旋转动画*/
 
-/* 用户注册界面样式 */
+.home-content {
+  position: relative;
+  height: calc(100vh - 60px);
+  background-color: #F8F1E0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px 0;
+}/* 首页内容样式 */
+
+.home-title {
+  font-size: 24px;
+  color: #333;
+  margin: 20px;
+  align-self: flex-end;/*右对齐*/
+}/* 首页标题样式 */
+
 .register-content {
   padding: 20px;
   background-color: #F8F1E0;
   min-height: calc(100vh - 60px);
-}
+}/* 用户注册界面样式 */
 
 .user-list-container {
   max-width: 1000px;
   margin: 0 auto;
 }/* 用户列表容器样式 */
+
+.buton-group{
+  display: flex;
+  align-items: center;
+}/* 按钮组样式 包括上传属性和添加用户*/
+
+.btn-upload-attributes{
+  background-color: rgba(255,179,71,0.6);
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: bold;
+}/* 上传属性集合按钮样式 */
+
+.btn-upload-attributes:hover {
+  background-color: rgba(255,179,71,0.8);
+}/* 上传属性集合按钮悬停样式 */
+
+.attributes-upload-pre{
+  color: #4CAF50;
+  font-weight: bold;
+  margin-bottom: 10px;
+}/* 上传属性集合预览样式 */
+
+.btn-add-user {
+  margin-left: 10px;
+  background-color: rgba(255,179,71,0.6);
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: bold;
+}/* 添加用户按钮样式 */
+
+.btn-add-user:hover {
+  background-color: rgba(255,179,71,0.8);
+}/* 添加用户按钮悬停样式 */
 
 .user-table {
   width: 100%;
@@ -107,7 +175,7 @@
 
 .user-table th, .user-table td {
   padding: 12px 15px;
-  text-align: left;
+  text-align: center;
   border-bottom: 1px solid #ddd;
 }/* 用户列表表头和单元格样式 */
 
@@ -120,16 +188,7 @@
   background-color: rgba(255,179,71,0.05);
 }/* 用户列表表格单行悬停样式 */
 
-.btn-add-user {
-  background-color: rgba(255,179,71,0.6);
-  border-radius: 4px;
-  padding: 10px 20px;
-  font-weight: bold;
-}/* 添加用户按钮样式 */
 
-.btn-add-user:hover {
-  background-color: rgba(255,179,71,0.8);
-}/* 添加用户按钮悬停样式 */
 
 .btn-download {
   background-color: rgba(100,200,100,0.6);
@@ -193,6 +252,91 @@
   gap: 10px;
 }/* 添加用户和取消按钮样式 */
 
+.btn-generate-attributes{
+  background-color: rgba(255,179,71,0.6);
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: bold;
+}/* 生成属性按钮样式 */
+
+.btn-generate-attributes:hover {
+  background-color: rgba(255,179,71,0.8);
+}/* 生成属性按钮悬停样式 */
+
+.attribute-pool-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.attribute-pool-modal .modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 800px;
+  max-width: 90%;
+  max-height: 80vh;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+.attribute-pool-modal h5 {
+  margin: 0 0 15px 0;
+  text-align: center;
+  font-size: 16px;
+  color: #333;
+}
+
+.attribute-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  gap: 8px;
+  max-height: calc(80vh - 100px);
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.attribute-item {
+  padding: 4px 6px;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: all 0.2s;
+}
+
+.attribute-item.selected {
+  background-color: #e0f7fa;
+  border-color: #006064;
+}
+
+.attribute-pool-modal .btn-confirm {
+  margin-top: 15px;
+  align-self: center;
+  padding: 8px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.attribute-pool-modal .btn-confirm:hover {
+  background-color: #3e8e41;
+}
+
 .btn-confirm {
   background-color: rgba(255,179,71,0.6);
   border-radius: 4px;
@@ -210,8 +354,54 @@
 .btn-cancel:hover {
   background-color: rgba(200,200,200,0.8);
 }/* 取消按钮悬停样式 */
-生成
 
+.attributes-display-section {
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 12px;
+  background-color: #f9f9f9;
+}
+
+.attributes-title {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.attributes-divider {
+  height: 1px;
+  background-color: #eee;
+  margin: 8px 0;
+}
+
+.attributes-container {
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-attributes-hint {
+  color: #999;
+  font-size: 13px;
+  text-align: center;
+}
+
+.attributes-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.attribute-tag {
+  background-color: #e0f7fa;
+  color: #006064;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
 .attributes-section {
   margin-top: 20px;
   padding: 15px;
@@ -260,14 +450,6 @@
   margin-bottom: 8px;
   padding: 0 5px;
 }/* 属性列表头样式 */
-
-.attribute-item {
-  display: grid;
-  grid-template-columns: 1fr 1fr 80px;
-  align-items: center;
-  padding: 8px 5px;
-  border-bottom: 1px solid #f0f0f0;
-}/* 属性列表项样式 */
 
 .btn-remove-attribute {
   background-color: rgba(200,100,100,0.6);
@@ -333,7 +515,7 @@
   border-bottom: none;
 }/*属性悬浮提示框最后一行样式*/
 
-/* 加密界面样式 */
+
 .encrypt-content {
   padding: 20px;
   background-color: #F8F1E0;
@@ -341,7 +523,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-}
+}/* 加密界面样式 */
 
 .encrypt-illustration {
   min-height: 200px;
@@ -356,50 +538,92 @@
   color: #666;
   font-size: 18px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
+  gap: 20px;
+}/*加密说明图样式*/
+
+.decrypt-content {
+  padding: 20px;
+  background-color: #F8F1E0;
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}/*解密界面样式*/
+
+.decrypt-illustration {
+  min-height: 200px;
+  width: 100%;
+  max-width: 600px;
+  background-color: rgba(255,255,255,0.5);
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 18px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  gap: 20px;
+}/*解密说明图样式*/
 
 .file-upload-section {
+  margin-bottom: 25px;
+  text-align: center;
   width: 100%;
   max-width: 600px;
   margin: 0 auto 30px;
   padding: 0 20px;
-}
+}/* 上传文件界面样式 */
 
 .upload-group {
   margin-bottom: 20px;
   display: flex;
   align-items: center;
   gap: 15px;
-}
+}/* 上传文件组样式 */
 
 .btn-upload {
-  background-color: rgba(255,179,71,0.6);
-  border-radius: 4px;
   padding: 10px 20px;
   cursor: pointer;
   position: relative;
-}
+  display: inline-block;               
+  background-Color: #4CAF50;
+  color: white;
+  border-Radius: 6px;
+  transition: all 0.3s ease;
+  font-size: 16px;
+  font-weight: 500;
+  box-Shadow: 0 2px 5px rgba(0,0,0,0.1);
+}/* 上传文件按钮样式 */
 
 .btn-upload:hover {
-  background-color: rgba(255,179,71,0.8);
-}
+  background-color: #3e8e41;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}/* 上传文件按钮激活样式 */
+
+.btn-upload:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+}/* 上传文件按钮激活样式 */
 
 .file-info {
   display: flex;
   align-items: center;
   gap: 10px;
-}
+}/*文件信息样式*/
+
 
 .btn-preview {
   background-color: rgba(100,200,100,0.6);
   border-radius: 4px;
   padding: 5px 10px;
   font-size: 14px;
-}
+}/* 预览按钮样式 */
 
 .btn-preview:hover {
   background-color: rgba(100,200,100,0.8);
-}
+}/* 预览按钮悬停样式 */
 
 .btn-encrypt-action {
   background-color: rgba(255,100,100,0.6);
@@ -407,16 +631,33 @@
   padding: 12px 30px;
   font-size: 18px;
   margin-bottom: 30px;
-}
+}/* 加密按钮样式 */
 
 .btn-encrypt-action:hover {
   background-color: rgba(255,100,100,0.8);
-}
+}/* 加密按钮悬停样式 */
 
 .btn-encrypt-action:disabled {
   background-color: rgba(200,200,200,0.6);
   cursor: not-allowed;
-}
+}/* 加密按钮禁用样式 */
+
+.btn-decrypt-action {
+  background-color: rgba(247, 100, 255, 0.6);
+  border-radius: 4px;
+  padding: 12px 30px;
+  font-size: 18px;
+  margin-bottom: 30px;
+}/* 解密按钮样式 */
+
+.btn-decrypt-action:hover {
+  background-color: rgba(247, 100, 255,0.8);
+}/* 解密按钮悬停样式 */
+
+.btn-decrypt-action:disabled {
+  background-color: rgba(200,200,200,0.6);
+  cursor: not-allowed;
+}/* 解密按钮禁用样式 */
 
 .result-section {
   width: 100%;
@@ -425,16 +666,16 @@
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
+}/* 结果界面样式 */
 
 .result-section h3 {
   margin-top: 0;
   color: #333;
-}
+}/* 结果标题样式 */
 
 .result-content {
   margin-top: 15px;
-}
+}/* 结果内容样式 */
 
 .result-content pre {
   white-space: pre-wrap;
@@ -444,24 +685,237 @@
   border-radius: 4px;
   max-height: 200px;
   overflow-y: auto;
-}
+}/* 结果展示样式<pre>标签的样式 */
 
 .btn-download {
   background-color: rgba(100,100,255,0.6);
   border-radius: 4px;
   margin-top: 15px;
-}
+}/* 下载结果文件按钮样式 */
 
 .btn-download:hover {
   background-color: rgba(100,100,255,0.8);
-}
+}/* 下载结果文件按钮悬停样式 */
 
-/* Test content style */
+
 .test-content {
   padding: 20px;
   background-color: #F8F1E0;
   min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}/* 测试界面样式 */
+
+.test-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}/* 测试界面容器样式 */
+
+.test-illustration {
+  height: 200px;
+  width: 700px;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  margin: 0 auto;
+}/* 测试说明图样式 */
+
+.btn-test-action {
+  padding: 14px 28px;
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+  transition: all 0.3s;
+  width: 300px;
+  margin-top: 10px;
+}/* 测试按钮样式 */
+
+.btn-test-action:hover {
+  background-color: #0b7dda;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}/* 测试按钮悬停样式 */
+
+.btn-test-action:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}/* 测试按钮激活样式 */
+
+.btn-test-action:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}/* 测试按钮禁用样式 */
+
+.test-result {
+  margin: 20px 0;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  width: 100%;
+  box-sizing: border-box;
+}/* 测试结果样式 */
+
+.test-result h3 {
+  border-bottom: 1px solid #eee;  /* 底部1px浅灰色边框 */
+  padding-bottom: 10px;          /* 底部内边距10px */
+  margin-bottom: 15px;           /* 底部外边距15px */
+}/* 测试结果标题样式 */
+
+.result-summary {
+  margin: 20px 0;
+  font-size: 24px;
+  font-weight: bold;
+}/* 测试结果总结样式 */
+
+.ciphertext-pool{
+  display: flex;            /* 启用弹性布局 */
+  justify-content: center;  /* 子元素水平居中 */
+  flex-wrap: wrap;          /* 允许子元素换行 */
+  gap: 15px;                /* 子元素间距15px */
+  margin-top: 30px;         /* 上边距30px */
+}/* 密文池样式 */
+
+.ciphertext-pool-item{
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px 15px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100px;
+  transition: background-color 0.3s ease;
+}/* 密文池子元素样式 */
+
+.ciphertext-pool-item:hover{
+  background-color: #f5f5f5;
+}/* 密文池子元素悬停样式 */
+
+.cipher-pool-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
+
+.cipher-pool-modal .modal-content {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  max-width: 80%;
+  max-height: 80%;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}/* 密文池弹窗样式 */
+
+.cipher-pool-modal h3 {
+  margin-top: 0;
+  color: #333;
+  text-align: center;
+}/* 密文池弹窗标题样式 */
+
+.cipher-pool-modal .btn-cancel {
+  background-color: rgba(200,100,100,0.6);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-top: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}/* 密文池弹窗关闭按钮样式 */
+
+.cipher-pool-modal .btn-cancel:hover {
+  background-color: rgba(200,100,100,0.8);
+}/* 密文池弹窗关闭按钮悬停样式 */
+
+.test-file-list {
+  border: 1px solid #eee;
+  border-radius: 4px;
+  padding: 15px;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  width: 600px;
+  margin-top: 20px;
+}/* 文件列表容器样式 */
+
+.test-file-list h3 {
+  margin-top: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+  font-weight: bold;
+}/*文件列表标题样式 */
+
+.test-file-list table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}/* 文件列表表格样式 */
+
+.test-file-list th {
+  background-color: rgba(255,179,71,0.2);
+  padding: 12px 15px;
+  text-align: center;
+  font-weight: bold;
+}/* 文件列表表头样式 */
+
+.test-file-list td {
+  padding: 12px 15px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}/* 文件列表单元格样式 */
+.test-file-list tr{
+  background-color: #f5f5f5;
+}/* 文件列表行样式 */
+.test-file-list tr:hover {
+  background-color: rgba(255,179,71,0.05);
+}/* 文件列表行悬停样式 */
+
+.test-file-list select {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}/* 文件列表选择框样式 */
+
+.test-file-list button {
+  padding: 8px 12px;
+  background-color: rgba(200,100,100,0.6);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}/* 文件列表按钮样式 */
+
+.test-file-list button:hover {
+  background-color: rgba(200,100,100,0.8);
+}/* 文件列表按钮悬停样式 */
 
 /* Mobile responsive styles */
 @media (max-width: 768px) {
