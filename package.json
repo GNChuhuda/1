@@ -1,7 +1,7 @@
 {
   "name": "my-app",
   "version": "0.1.0",
-  "homepage": "http://GNChuhuda.github.io/1",
+  "homepage": "https://GNChuhuda.github.io/1",
   "private": true,
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
