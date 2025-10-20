@@ -1,0 +1,212 @@
+.access-control-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 600px;
+  max-width: 90%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.expression-editor {
+  min-height: 100px;
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin: 15px 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* 保持整体在一行内渲染，避免左右括号断到不同行 */
+.expression-editor .operator-node,
+.expression-editor .nested-operator {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  vertical-align: middle;
+}
+
+.bracket-container {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  margin: 0 5px;
+  white-space: nowrap;
+}
+
+/* Nested operator styles */
+.nested-operator {
+  background-color: #f8f9fa;
+  padding: 2px 4px;
+  border-radius: 4px;
+  margin: 0 2px;
+}
+
+/* 去除左右竖杠，仅保留括号字符进行分组视觉 */
+.nested-bracket {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 4px;
+  margin: 0 2px;
+  white-space: nowrap;
+}
+
+.nested-operator .bracket-container {
+  margin: 0 2px;
+}
+
+.bracket {
+  font-size: 18px;
+  color: #333;
+}
+
+.placeholder-button {
+  background-color: rgba(0, 123, 255, 0.1);
+  border: 1px dashed rgba(0, 123, 255, 0.5);
+  border-radius: 4px;
+  padding: 2px 8px;
+  min-width: 20px;
+  min-height: 24px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s;
+}
+
+/* 使占位按钮不扩张并与内容垂直居中 */
+.placeholder-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholder-button.editable {
+  background-color: rgba(0, 123, 255, 0.2);
+}
+
+.placeholder-button:not(.editable) {
+  background-color: transparent;
+  border: none;
+  cursor: default;
+}
+
+.operator-symbol {
+  margin: 0 5px;
+  font-weight: bold;
+}
+
+.attribute-node {
+  color: #28a745;
+  font-weight: 500;
+}
+
+.context-menu {
+  position: absolute;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+}
+
+.context-menu button {
+  display: block;
+  width: 100%;
+  padding: 8px 15px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.context-menu button:hover {
+  background-color: #f8f9fa;
+}
+
+.menu-divider {
+  height: 1px;
+  background-color: #eee;
+  margin: 4px 0;
+}
+
+.attribute-selector-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1002;
+}
+
+.attribute-selector {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+}
+
+.attribute-list {
+  max-height: 300px;
+  overflow-y: auto;
+  margin: 15px 0;
+}
+
+.attribute-item {
+  padding: 8px 15px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.attribute-item:hover {
+  background-color: #f8f9fa;
+}
+
+.attribute-item.selected {
+  background-color: #e9ecef;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.btn-cancel, .btn-confirm {
+  padding: 8px 15px;
+  margin-left: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-cancel {
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+}
+
+.btn-confirm {
+  background-color: #007bff;
+  color: white;
+  border: 1px solid #007bff;
+}
+
+.btn-confirm:disabled {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  cursor: not-allowed;
+}

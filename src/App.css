@@ -2,16 +2,29 @@
   text-align: center;
 }/*全局应用样式*/
 
-.role-label {
-  position: absolute;
-  left: 120px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 48px;
+.role-container {
+  display: flex;
+  align-items: center;
+  padding: 2px 8px;
+  margin-left: 20px;
+  background-color: rgba(255,255,255,0.3);
+}
+
+.role {
+  font-size: 24px;
   font-weight: bold;
-  color: rgba(255, 184, 4, 0.719);
-  z-index: 1;
-  opacity: 0.8;
+  color: #000000;
+  margin-left: 20px;
+  margin-right: 20px;
+  align-self: center;
+}
+
+.role-label {
+  font-size: 24px;
+  font-weight: bold;
+  color: rgba(255, 150, 0, 0.9);
+  margin-left: 20px;
+  align-self: center;
 }
 
 .button-container {
@@ -140,6 +153,7 @@
   background-color: rgba(255,179,71,0.6);
   border-radius: 4px;
   padding: 10px 20px;
+  margin-right: 20px;
   font-weight: bold;
 }/* 上传属性集合按钮样式 */
 

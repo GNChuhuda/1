@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
+import AccessControlModal from './AccessControlModal';
 
 function App() {
   const [activeTab, setActiveTab] = useState('home');
@@ -16,10 +17,17 @@ function App() {
   const [attributeUploaded, setAttributeUploaded] = useState(false);
 
   const handleAttributeFileUpload = (e) => {
+    console.log('handleAttributeFileUpload called'); // 调试信息
     const file = e.target.files[0];
-    if (!file) return;
+    if (!file) {
+      console.log('No file selected');
+      return;
+    }
+    console.log('File selected:', file.name); // 调试信息
     setAttributeFile(file);
     setAttributeUploaded(true);
+    console.log('Calling parseAttributeFile'); // 调试信息
+    parseAttributeFile(); // 上传后自动解析
   };
 
   const previewAttributeFile = () => {
@@ -32,22 +40,55 @@ function App() {
   };
 
   const parseAttributeFile = () => {
-    if (!attributeFile) return;
+    console.log('parseAttributeFile called'); // 调试信息
+    if (!attributeFile) {
+      console.log('No attribute file selected');
+      return;
+    }
     
     const reader = new FileReader();
     reader.onload = (e) => {
-      const content = e.target.result;
-      const names = content.split(',');
-      const updatedPool = attributePool.map((attr, index) => ({
-        ...attr,
-        name: names[index] ? names[index].trim() : attr.name
-      }));
-      setAttributePool(updatedPool);
-      alert('属性集合已更新');
+      console.log('FileReader onload triggered'); // 调试信息
+      try {
+        const content = e.target.result;
+        // 按行分割，去除空行和前后空格
+        const lines = content.split('\n')
+          .map(line => line.trim())
+          .filter(line => line.length > 0);
+        
+        // 提取所有属性名，支持逗号、空格、制表符分隔
+        let names = [];
+        lines.forEach(line => {
+          names = [...names, ...line.split(/[, \t]+/).map(n => n.trim()).filter(n => n)];
+        });
+        
+        if (names.length === 0) {
+          alert('错误：未找到有效属性名，请检查文件格式');
+          return;
+        }
+        
+        // 更新前100个属性，保持总数不变
+        const updatedPool = attributePool.map((attr, index) => ({
+          ...attr,
+          name: index < names.length ? names[index] : attr.name,
+          selected: false // 重置选择状态
+        }));
+        
+        setAttributePool(updatedPool);
+        setAttributeUploaded(true);
+        alert(`成功加载${names.length}个属性，已更新属性池`);
+      } catch (error) {
+        console.error('属性文件解析错误:', error);
+        alert('属性文件解析失败，请检查文件格式');
+      }
+    };
+    reader.onerror = () => {
+      alert('文件读取失败，请重试');
     };
     reader.readAsText(attributeFile);
   };
-  const [publicKeyFile, setPublicKeyFile] = useState(null);
+  const [accessControlPolicy, setAccessControlPolicy] = useState(null);
+  const [showAccessControlModal, setShowAccessControlModal] = useState(false);
   const [plainTextFile, setPlainTextFile] = useState(null);
   const [privateKeyFile, setPrivateKeyFile] = useState(null);
   const [cipherTextFile, setCipherTextFile] = useState(null);
@@ -61,9 +102,7 @@ function App() {
     const file = event.target.files[0];
     if (!file) return;
     
-    if (type === 'publicKey') {
-      setPublicKeyFile(file);
-    } else if (type === 'plainText') {
+    if (type === 'plainText') {
       setPlainTextFile(file);
     } else if (type === 'privateKey') {
       setPrivateKeyFile(file);
@@ -81,7 +120,7 @@ function App() {
   };
 
   const handleEncrypt = () => {
-    if (!publicKeyFile || !plainTextFile) return;
+    if (!accessControlPolicy || !plainTextFile) return;
     
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -233,6 +272,13 @@ function App() {
         >
           等值测试
         </button>
+        <div className="role-container">
+          <div className="role">Role</div>
+          {activeTab === 'register' && <div className="role-label">Manager</div>}
+          {activeTab === 'encrypt' && <div className="role-label">Sender</div>}
+          {activeTab === 'decrypt' && <div className="role-label">Receiver</div>}
+          {activeTab === 'test' && <div className="role-label">Tester</div>}
+        </div>
       </div>
 
       {activeTab === 'home' && (
@@ -253,7 +299,6 @@ function App() {
 
       {activeTab === 'register' && (
         <div className="register-content">
-          <div className="role-label">Manager</div>
           <div className="user-list-container">
             <div className="button-group">
                 {attributeUploaded && (
@@ -268,7 +313,7 @@ function App() {
                     </button>
                   </div>
                 )}
-                <label className="btn btn-upload-attributes">
+              <label className="btn btn-upload-attributes">
                   上传属性集合
                   <input 
                     type="file" 
@@ -474,7 +519,6 @@ function App() {
       )}
       {activeTab === 'encrypt' && (
         <div className="encrypt-content">
-          <div className="role-label">Sender</div>
           <div className="encrypt-illustration" style={{
             backgroundImage: `url(${process.env.PUBLIC_URL}/3.png)`,
             backgroundSize: 'contain',
@@ -484,23 +528,15 @@ function App() {
           </div>
           <div className="file-upload-section" style={{marginTop: '40px'}}>
             <div className="upload-group">
-              <label className="btn btn-upload">
-                上传公钥文件
-                  <input 
-                  type="file" 
-                  style={{display: 'none'}}
-                  onChange={(e) => handleFileUpload(e, 'publicKey')}
-                />
-              </label>
-              {publicKeyFile && (
-                <div className="file-info">
-                  <span>{publicKeyFile.name}</span>
-                  <button 
-                    className="btn btn-preview"
-                    onClick={() => previewFile(publicKeyFile)}
-                  >
-                    预览
-                  </button>
+              <button 
+                className="btn btn-upload"
+                onClick={() => setShowAccessControlModal(true)}
+              >
+                设置访问控制结构
+              </button>
+              {accessControlPolicy && (
+                <div className="file-info" style={{marginLeft: '12px', maxWidth: '60%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
+                  <span>{accessControlPolicy}</span>
                 </div>
               )}
             </div>
@@ -530,7 +566,7 @@ function App() {
 
           <button 
             className="btn btn-encrypt-action"
-            disabled={!publicKeyFile || !plainTextFile}
+            disabled={!accessControlPolicy || !plainTextFile}
             onClick={handleEncrypt}
           >
             加密
@@ -550,11 +586,21 @@ function App() {
               </div>
             </div>
           )}
+
+          {showAccessControlModal && (
+            <AccessControlModal
+              attributes={attributePool}
+              onClose={() => setShowAccessControlModal(false)}
+              onConfirm={(policy) => {
+                setAccessControlPolicy(policy);
+                setShowAccessControlModal(false);
+              }}
+            />
+          )}
         </div>
       )}
       {activeTab === 'decrypt' && (
         <div className="decrypt-content">
-          <div className="role-label">Receiver</div>
           <div className="decrypt-illustration">
               <img 
               src={`${process.env.PUBLIC_URL}/4.png`} 
@@ -648,7 +694,6 @@ function App() {
       
       {activeTab === 'test' && (
         <div className="test-content" >
-          <div className="role-label">Tester</div>
           <div style={{display: 'flex', gap: '20px'}}>
             <div style={{flex: 2}}>
               <div className="test-illustration" style={{
