@@ -38,18 +38,6 @@ const createOperatorNode = (operator, left, right, isNested = false) => {
   };
 };
 
-// 创建一元 NOT 节点
-const createNotNode = (child) => {
-  const newChild = child ? {...child} : createPlaceholder();
-  return {
-    type: NodeType.OPERATOR,
-    id: generateUniqueId(),
-    operator: 'not',
-    child: newChild,
-    editable: false,
-    isNested: true
-  };
-};
 
 // 创建属性节点
 const createAttributeNode = (attribute) => ({
@@ -70,24 +58,6 @@ const AccessControlModal = ({ attributes, onClose, onConfirm }) => {
   const renderNode = (node) => {
     switch (node.type) {
       case NodeType.OPERATOR:
-        if (node.operator === 'not') {
-          return (
-            <div className={`operator-node ${node.isNested ? 'nested-operator' : ''}`}>
-              <span className="operator-symbol">﹃</span>
-              <div className="bracket-container">
-                <span className="bracket">(</span>
-                {node.child && node.child.type === NodeType.OPERATOR ? (
-                  <div className="nested-bracket">
-                    {renderNode(node.child)}
-                  </div>
-                ) : (
-                  renderNode(node.child)
-                )}
-                <span className="bracket">)</span>
-              </div>
-            </div>
-          );
-        }
         return (
           <div className={`operator-node ${node.isNested ? 'nested-operator' : ''}`}>
             <div className="bracket-container">
@@ -161,14 +131,8 @@ const AccessControlModal = ({ attributes, onClose, onConfirm }) => {
     if (!selectedNode) return;
 
     if (selectedNode.type === NodeType.PLACEHOLDER) {
-      let newNode;
-      if (operator === 'not') {
-        // 一元非：替换为 NOT 节点，子节点为新的占位符
-        newNode = createNotNode();
-      } else {
-        // 二元与/或：替换为带两个占位符的节点
-        newNode = createOperatorNode(operator);
-      }
+      // 替换为带两个占位符的节点
+      const newNode = createOperatorNode(operator);
       const updatedExpression = updateNodeInTree(expression, selectedNode.id, newNode);
       setExpression(updatedExpression);
     }
@@ -188,12 +152,8 @@ const AccessControlModal = ({ attributes, onClose, onConfirm }) => {
     }
     
     if (newRoot.type === NodeType.OPERATOR) {
-      if (newRoot.operator === 'not') {
-        newRoot.child = updateNodeInTree(newRoot.child, nodeId, newNode);
-      } else {
-        newRoot.left = updateNodeInTree(newRoot.left, nodeId, newNode);
-        newRoot.right = updateNodeInTree(newRoot.right, nodeId, newNode);
-      }
+      newRoot.left = updateNodeInTree(newRoot.left, nodeId, newNode);
+      newRoot.right = updateNodeInTree(newRoot.right, nodeId, newNode);
     }
     
     return newRoot;
@@ -222,10 +182,6 @@ const AccessControlModal = ({ attributes, onClose, onConfirm }) => {
     }
     
     if (node.type === NodeType.OPERATOR) {
-      if (node.operator === 'not') {
-        const childStr = convertExpressionToString(node.child);
-        return `﹃(${childStr})`;
-      }
       const leftStr = convertExpressionToString(node.left);
       const rightStr = convertExpressionToString(node.right);
       if (node.operator === 'and') {
@@ -246,9 +202,6 @@ const AccessControlModal = ({ attributes, onClose, onConfirm }) => {
     }
     
     if (node.type === NodeType.OPERATOR) {
-      if (node.operator === 'not') {
-        return validateExpression(node.child);
-      }
       return validateExpression(node.left) && validateExpression(node.right);
     }
     
@@ -272,7 +225,6 @@ const AccessControlModal = ({ attributes, onClose, onConfirm }) => {
           >
             <button onClick={() => insertOperator('and')}>与 (∧)</button>
             <button onClick={() => insertOperator('or')}>或 (∨)</button>
-            <button onClick={() => insertOperator('not')}>非 (﹃)</button>
             <div className="menu-divider"></div>
             <button onClick={() => {
               setShowAttributeSelector(true);
