@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 import AccessControlModal from './AccessControlModal';
+import userApi from './api/userApi';
 
 function App() {
   const [activeTab, setActiveTab] = useState('home');
@@ -13,6 +14,7 @@ function App() {
   const [attributeFile, setAttributeFile] = useState(null);
   const [showAttributePool, setShowAttributePool] = useState(false);
   const [selectedAttributes, setSelectedAttributes] = useState([]);
+  const [privateKeysBuffer, setPrivateKeysBuffer] = useState({}); // 私钥缓冲区
 
   const [attributeUploaded, setAttributeUploaded] = useState(false);
 
@@ -24,10 +26,64 @@ function App() {
       return;
     }
     console.log('File selected:', file.name); // 调试信息
+    
+    // 先设置状态
     setAttributeFile(file);
     setAttributeUploaded(true);
-    console.log('Calling parseAttributeFile'); // 调试信息
-    parseAttributeFile(); // 上传后自动解析
+    
+    console.log('Parsing file content directly'); // 调试信息
+    
+    // 直接在这里解析文件，不依赖状态更新
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      console.log('FileReader onload triggered'); // 调试信息
+      try {
+        const content = e.target.result;
+        // 按行分割，去除空行和前后空格
+        const lines = content.split('\n')
+          .map(line => line.trim())
+          .filter(line => line.length > 0);
+        
+        // 提取所有属性名，支持逗号、空格、制表符分隔
+        let names = [];
+        lines.forEach(line => {
+          names = [...names, ...line.split(/[, \t]+/).map(n => n.trim()).filter(n => n)];
+        });
+        
+        if (names.length === 0) {
+          alert('错误：未找到有效属性名，请检查文件格式');
+          return;
+        }
+        
+        // 更新前100个属性，保持总数不变
+        const updatedPool = Array.from({length: 100}, (_, i) => ({
+          id: i+1,
+          name: i < names.length ? names[i] : `${i+1}`,
+          selected: false // 重置选择状态
+        }));
+        
+        setAttributePool(updatedPool);
+        
+        // 上传属性文件时发送数据到服务器
+        const attributeDataForServer = updatedPool.slice(0, names.length).map((attr, index) => ({
+          id: attr.id,
+          name: attr.name,
+          selected: attr.selected
+        }));
+        
+        // 发送数据到服务器（异步，不阻塞本地操作）
+        sendAttributeDataToServer(attributeDataForServer);
+        
+        alert(`成功加载${names.length}个属性，已更新属性池并发送到服务器`);
+      } catch (error) {
+        console.error('属性文件解析错误:', error);
+        alert('属性文件解析失败，请检查文件格式');
+      }
+    };
+    reader.onerror = () => {
+      alert('文件读取失败，请重试');
+    };
+    reader.readAsText(file); // 确保传递file对象而不是可能未更新的state
   };
 
   const previewAttributeFile = () => {
@@ -39,7 +95,23 @@ function App() {
     reader.readAsText(attributeFile);
   };
 
+  // 发送属性数据到服务器
+  const sendAttributeDataToServer = async (attributeData) => {
+    try {
+      console.log('开始发送属性数据到服务器...');
+      const response = await userApi.sendAttributePoolData(attributeData);
+      console.log('服务器响应成功:', response);
+      return response;
+    } catch (error) {
+      console.error('发送属性数据到服务器失败:', error);
+      // 这里可以添加错误处理逻辑，但不会阻止本地处理
+      return null;
+    }
+  };
+
   const parseAttributeFile = () => {
+    // 保留此函数的基本结构，以防其他地方调用
+    // 主要实现已移至handleAttributeFileUpload
     console.log('parseAttributeFile called'); // 调试信息
     if (!attributeFile) {
       console.log('No attribute file selected');
@@ -76,6 +148,10 @@ function App() {
         
         setAttributePool(updatedPool);
         setAttributeUploaded(true);
+        
+        // 构建属性集时不再发送数据到服务器，只在文件上传时发送
+        // 保留本地属性池更新逻辑
+        
         alert(`成功加载${names.length}个属性，已更新属性池`);
       } catch (error) {
         console.error('属性文件解析错误:', error);
@@ -161,22 +237,9 @@ function App() {
     }, 100);
   };
 
-  const generateKeyPair = () => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const randomString = (length) => {
-      let result = '';
-      for (let i = 0; i < length; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      return result;
-    };
-    return {
-      publicKey: `pub_${randomString(16)}`,
-      privateKey: `priv_${randomString(32)}`
-    };
-  };//模拟生成getKeyPair过程
+  // 注意：现在通过API获取私钥文件，不再需要前端生成密钥对
 
-  const addUser = () => {
+  const addUser = async () => {
     if (!newUserId.trim()) {
       alert('请输入有效的用户ID');
       return;
@@ -189,26 +252,88 @@ function App() {
     
     const selectedAttributes = attributePool
       .filter(attr => attr.selected)
-      .map(attr => ({name: attr.name}));
+      .map(attr => ({id: attr.id, name: attr.name}));
     
     if (selectedAttributes.length === 0) {
       alert('请选择至少一个属性');
       return;
     }
     
-    const keyPair = generateKeyPair();
-    const newUser = {
-      id: newUserId.trim(),
-      publicKey: keyPair.publicKey,
-      privateKey: keyPair.privateKey,
-      attributes: selectedAttributes
-    };
+    try {
+      // 验证属性列表是否为空
+      if (!selectedAttributes || selectedAttributes.length === 0) {
+        alert('请至少选择一个用户属性');
+        return;
+      }
+      
+      // 准备发送到后端的数据，确保每个属性对象包含必要的字段
+      const formattedAttributes = selectedAttributes.map(attr => ({
+        id: attr.id,
+        name: attr.name
+      }));
+      
+      const userData = {
+        userId: newUserId.trim(),
+        attributes: formattedAttributes
+      };
+      
+      // 调用API创建用户并获取私钥文件
+      console.log('调用API创建用户:', userData);
+      const response = await userApi.createUser(userData);
+      console.log('用户创建成功:', response);
+      
+      // 保存私钥到缓冲区
+      setPrivateKeysBuffer(prev => ({
+        ...prev,
+        [newUserId.trim()]: response.privateKeyContent // 假设API返回私钥内容
+      }));
+      
+      // 添加用户到本地状态（用于UI显示）
+      const newUser = {
+        id: newUserId.trim(),
+        attributes: selectedAttributes,
+        createdAt: new Date().toISOString()
+      };
+      
+      setUsers([...users, newUser]);
+      setNewUserId('');
+      // 重置属性池选择状态
+      setAttributePool(attributePool.map(attr => ({...attr, selected: false})));
+      // 清空已选择的属性列表，确保创建下一个用户时不显示之前的属性
+      setSelectedAttributes([]);
+      setShowAddModal(false);
+      
+      alert('用户创建成功，私钥已保存，可通过下载密钥按钮获取');
+    } catch (error) {
+      console.error('创建用户失败:', error);
+      alert('创建用户失败，请重试');
+    }
+  };
+  
+  // 下载用户私钥
+  const downloadKeys = (user) => {
+    const privateKeyContent = privateKeysBuffer[user.id];
+    if (!privateKeyContent) {
+      alert('未找到该用户的私钥');
+      return;
+    }
     
-    setUsers([...users, newUser]);
-    setNewUserId('');
-    // 重置属性池选择状态
-    setAttributePool(attributePool.map(attr => ({...attr, selected: false})));
-    setShowAddModal(false);
+    // 创建Blob对象
+    const blob = new Blob([privateKeyContent], { type: 'text/plain' });
+    
+    // 创建下载链接
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `private_key_${user.id}.txt`;
+    document.body.appendChild(link);
+    
+    // 触发下载
+    link.click();
+    
+    // 清理资源
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const deleteUser = (index) => {
@@ -217,21 +342,7 @@ function App() {
     setUsers(newUsers);
   };
 
-  const downloadKeys = (user) => {
-    const privateKeyBlob = new Blob([user.privateKey], { type: 'text/plain' });
-    const privateKeyUrl = URL.createObjectURL(privateKeyBlob);
-    
-    const privateKeyLink = document.createElement('a');
-    privateKeyLink.href = privateKeyUrl;
-    privateKeyLink.download = `${user.id}_private.key`;
-    document.body.appendChild(privateKeyLink);
-    privateKeyLink.click();
-    document.body.removeChild(privateKeyLink);
-    
-    setTimeout(() => {
-      URL.revokeObjectURL(privateKeyUrl);
-    }, 100);
-  };
+  // 注意：私钥现在在用户创建时自动下载，不再需要单独的下载函数
 
   return (
     <div className="App">
@@ -362,7 +473,7 @@ function App() {
                           </>
                         ) : '-'}
                       </td>
-                      <td>
+                      <td style={{ display: 'flex', gap: '10px' }}>
                         <button 
                           className="btn-download"
                           onClick={() => downloadKeys(user)}
@@ -440,6 +551,7 @@ function App() {
                     onClick={() => {
                       setShowAddModal(false);
                       setAttributePool(attributePool.map(attr => ({...attr, selected: false})));
+                      setSelectedAttributes([]);
                     }}
                   >
                     取消
@@ -483,11 +595,11 @@ function App() {
                                 a.id === attr.id ? {...a, selected: !a.selected} : a
                               );
                               setAttributePool(updatedPool);
-                              // 立即更新选中的属性列表
+                              // 立即更新选中的属性列表，确保包含id和name字段
                               setSelectedAttributes(
                                 updatedPool
                                   .filter(attr => attr.selected)
-                                  .map(attr => ({name: attr.name}))
+                                  .map(attr => ({id: attr.id, name: attr.name}))
                               );
                             }}
                           >
@@ -499,12 +611,12 @@ function App() {
                         className="btn btn-confirm-attribute"
                         onClick={() => {
                           setShowAttributePool(false);
-                          // 确保关闭时更新选中的属性列表
-                          setSelectedAttributes(
-                            attributePool
-                              .filter(attr => attr.selected)
-                              .map(attr => ({name: attr.name}))
-                          );
+                        // 确保关闭时更新选中的属性列表，确保包含id和name字段
+                        setSelectedAttributes(
+                          attributePool
+                            .filter(attr => attr.selected)
+                            .map(attr => ({id: attr.id, name: attr.name}))
+                        );
                         }}
                       >
                         确认添加

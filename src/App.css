@@ -208,20 +208,24 @@
   background-color: rgba(100,200,100,0.6);
   margin-right: 10px;
   border-radius: 4px;
-}/* 下载按钮样式 */
+  padding: 5px 10px;
+  cursor: pointer;
+}
 
 .btn-download:hover {
   background-color: rgba(100,200,100,0.8);
-}/* 下载按钮悬停样式 */
+}
 
 .btn-delete {
   background-color: rgba(200,100,100,0.6);
   border-radius: 4px;
-}/* 删除按钮样式 */
+  padding: 5px 10px;
+  cursor: pointer;
+}
 
 .btn-delete:hover {
   background-color: rgba(200,100,100,0.8);
-}/* 删除按钮悬停样式 */
+}
 
 
 .add-user-modal {
